@@ -4,7 +4,10 @@ import Link from 'next/link'
 import { Pencil } from 'lucide-react'
 
 export default function ProductCard({ product, isAdmin = false }: { product: Product, isAdmin?: boolean }) {
-  const imageUrl = product.image_url || 'https://placehold.co/400x400?text=Producto'
+ const primaryImage = product.product_images?.find(img => img.is_primary)
+ const fallbackImage = product.product_images?.[0]
+
+const imageUrl = primaryImage?.url || fallbackImage?.url || 'https://placehold.co/400x400?text=sin imagen'
   
   // verifica el stock :V
   const isOutOfStock = product.stock === 0;
