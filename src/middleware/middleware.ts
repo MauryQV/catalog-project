@@ -21,17 +21,19 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Si intenta entrar a /admin (excepto /admin/login) sin sesión → redirige
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-  const isLoginPage = request.nextUrl.pathname === '/admin/login'
+  const isAdminRoot = request.nextUrl.pathname === '/admin'
 
-  if (isAdminRoute && !isLoginPage && !user) {
-    return NextResponse.redirect(new URL('/admin/login', request.url))
-  }
+  if (isAdminRoute) {
+    if (!user && !isAdminRoot) {
+      // Unauthenticated users trying to access subroutes redirect to /admin
+      return NextResponse.redirect(new URL('/admin', request.url))
+    }
 
-  // Si ya tiene sesión y va al login → redirige al panel
-  if (isLoginPage && user) {
-    return NextResponse.redirect(new URL('/admin', request.url))
+    if (user && isAdminRoot) {
+      // Authenticated users trying to access login redirect to /admin/dashboard
+      return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+    }
   }
 
   return response
