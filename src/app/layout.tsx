@@ -4,6 +4,10 @@ import { createClient } from '../app/lib/supabase/server'
 import Sidebar from '../app/components/layout/Sidebar'
 import MobileNav from '../app/components/layout/MobileNav'
 import './globals.css'
+import { Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: 'Mi Catálogo',
@@ -23,7 +27,7 @@ export default async function RootLayout({
   const isAdmin = !!user
 
   return (
-    <html lang="es">
+    <html lang="es" className={cn("font-sans", inter.variable)}>
       <body className="bg-gray-50 text-gray-900">
         <div className="flex min-h-screen">
           
