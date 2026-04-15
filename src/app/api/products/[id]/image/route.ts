@@ -71,6 +71,11 @@ const { data: existingImages } = await supabase
 
 const isPrimary = !existingImages || existingImages.length === 0
 
+await supabase
+  .from('product_images')
+  .update({ is_primary: false })
+  .eq('product_id', id)
+
 
 const { data, error } = await supabase
   .from('product_images')
@@ -79,8 +84,8 @@ const { data, error } = await supabase
       product_id: id,
       public_id: uploaded.public_id,
       url: uploaded.secure_url,
-      is_primary: isPrimary,
-      sort_order: existingImages?.length || 0
+      is_primary: true, 
+      sort_order: 0
     }
   ])
   .select()

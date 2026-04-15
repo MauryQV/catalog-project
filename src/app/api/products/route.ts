@@ -59,9 +59,9 @@ export async function GET(request: Request) {
     .select(`
       *,
       categories(name, slug),
-      product_images(id, public_id, url, is_primary, sort_order)
+      product_images!inner(id, public_id, url, is_primary, sort_order)
     `)
-    .eq('active', true)
+    .eq('product_images.is_primary', true)
     .order('created_at', { ascending: false })
     .order('sort_order', { referencedTable: 'product_images', ascending: true })
 
