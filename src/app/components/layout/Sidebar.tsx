@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Category } from "../../../types/index";
-import LogoutButton from "../../admin/LoggoutButton";
 import Image from "next/image";
 type Props = {
   categories: Category[];
@@ -8,7 +7,7 @@ type Props = {
 
 export default function Sidebar({ categories }: Props) {
   return (
-    <aside className="hidden md:flex flex-col w-56 min-h-screen  px-4 py-6 shrink-0 bg-black/70 backdrop-blur-sm">
+    <aside className="hidden md:flex flex-col w-56 h-screen sticky top-0 overflow-y-auto px-4 py-6 shrink-0 bg-black/70 backdrop-blur-sm">
       <div className="flex items-center justify-center gap-x-3 ">
         <Image src="/catlogo.png" alt="Logo" width={50} height={50} className="w-auto h-auto" />
         <span className="font-black text-white">BLACK CAT</span>
