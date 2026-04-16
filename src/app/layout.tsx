@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -15,6 +16,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="es" className={cn("font-sans", inter.variable)} suppressHydrationWarning>
       <body>
+        <Toaster />
+
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
