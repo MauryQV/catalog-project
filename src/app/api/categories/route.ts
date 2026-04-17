@@ -72,10 +72,9 @@ export async function GET() {
 // Crear una categoría (POST)
 export async function POST(request: Request) {
   const supabase = await createClient()
-  
-  // Verificación de usuario (descomenta si necesitas proteger la ruta)
-  // const { data: { user } } = await supabase.auth.getUser()
-  // if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+  const { data: { user } } = await supabase.auth.getUser()
+   if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
   // Recibimos el JSON limpio
   const body = await request.json()
