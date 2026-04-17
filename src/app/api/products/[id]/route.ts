@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '../../../lib/supabase/server'
+import {requireUser } from '../../../lib/auth' 
 
 
 /**
@@ -73,9 +73,8 @@ type Params = { params: Promise<{ id: string }> }
 
 //PATCH  para actualizar un producto
 export async function PATCH(request: Request, { params }: Params) {
-  const supabase = await createClient()
-  //const { data: { user } } = await supabase.auth.getUser()
-  //if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const { supabase, unauthorizedResponse} = await requireUser() 
+if (unauthorizedResponse) return unauthorizedResponse
 
   const { id } = await params
   const body = await request.json()
@@ -108,10 +107,10 @@ export async function PATCH(request: Request, { params }: Params) {
   return NextResponse.json({ data })
 }
 
+//función para desactivar un producto (active = false)
 export async function DELETE(_request: Request, { params }: Params) {
-  const supabase = await createClient()
-  //const { data: { user } } = await supabase.auth.getUser()
-  //if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+   const { supabase, unauthorizedResponse } = await requireUser()
+  if (unauthorizedResponse) return unauthorizedResponse
 
   const { id } = await params
 
@@ -129,7 +128,9 @@ export async function DELETE(_request: Request, { params }: Params) {
 
 //GET de un producto por id
 export async function GET(_request: Request, { params }: Params) {
-  const supabase = await createClient()
+   const { supabase, unauthorizedResponse} = await requireUser()
+   if (unauthorizedResponse) return unauthorizedResponse
+
   const { id } = await params
 
   const { data, error } = await supabase

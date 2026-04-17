@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '../../lib/supabase/server'
+import { requireUser, getAuthSession } from '../../lib/auth'
 
 
 /**
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const slug = searchParams.get('categoria')
 
-  const supabase = await createClient()
+  const {supabase} = await getAuthSession()
   let query = supabase
     .from('products')
     .select(`
@@ -80,18 +80,16 @@ export async function GET(request: Request) {
 
 // POST de los productos
 export async function POST(request: Request) {
-  const supabase = await createClient()
-  //const { data: { user } } = await supabase.auth.getUser()
- // if (!user) {
-  //  return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-  //}
+   const { supabase, unauthorizedResponse } = await requireUser()
+  if (unauthorizedResponse) {
+    return unauthorizedResponse
+  }
   const formData = await request.formData()
   const name        = formData.get('name') as string
   const description = formData.get('description') as string
   const price       = formData.get('price') as string
   const category_id = formData.get('category_id') as string
   const stock       = formData.get('stock') as string
-  //const image       = formData.get('image') as File | null
 
   // 3. Validar campos requeridos
   if (!name || !price || !category_id) {

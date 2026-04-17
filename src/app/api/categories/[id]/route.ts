@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '../../../lib/supabase/server'
+import { requireUser, getAuthSession } from '../../../lib/auth'
 
 /**
  * @swagger
@@ -69,8 +69,9 @@ import { createClient } from '../../../lib/supabase/server'
 
 type Params = { params: Promise<{ id: string }> }
 
+//Funcion para obtener el detalle de una categoría (GET)
 export async function GET(_request: Request, { params }: Params) {
-  const supabase = await createClient()
+  const { supabase } = await getAuthSession()
   const { id } = await params
 
   const { data, error } = await supabase
@@ -82,11 +83,12 @@ export async function GET(_request: Request, { params }: Params) {
   if (error) return NextResponse.json({ error: 'Categoría no encontrada' }, { status: 404 })
   return NextResponse.json({ data })
 }
-
+// Editar una categoría (PATCH)
 export async function PATCH(request: Request, { params }: Params) {
-  const supabase = await createClient()
-  //const { data: { user } } = await supabase.auth.getUser()
-  //if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+  const { supabase, unauthorizedResponse } = await requireUser()
+  if (unauthorizedResponse) return unauthorizedResponse
+
 
   const { id } = await params
   const body = await request.json()
@@ -118,9 +120,11 @@ export async function PATCH(request: Request, { params }: Params) {
   return NextResponse.json({ data })
 }
 
-
+// Eliminar una categoría (DELETE)
 export async function DELETE(_request: Request, { params }: Params) {
-  const supabase = await createClient()
+  const { supabase, unauthorizedResponse } = await requireUser()
+  if (unauthorizedResponse) return unauthorizedResponse
+
   const { id } = await params
   const { count, error: countError } = await supabase
     .from('products')

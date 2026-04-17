@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '../../../../../lib/supabase/server'
+import { requireUser } from '../../../../../lib/auth';
 import cloudinary from '../../../../../lib/cloudinary/cloudinary'
 
 /**
@@ -47,11 +47,10 @@ import cloudinary from '../../../../../lib/cloudinary/cloudinary'
 
 type Params = { params: Promise<{ id: string; imageId: string }> }
 
-// PATCH marcar imagen como prrincipañ
+// PATCH marcar imagen como principal
 export async function PATCH(_request: Request, { params }: Params) {
-  const supabase = await createClient()
- // const { data: { user } } = await supabase.auth.getUser()
-  //if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+const {supabase, unauthorizedResponse} = await requireUser()
+if (unauthorizedResponse) return unauthorizedResponse
 
   const { id, imageId } = await params
 
@@ -76,10 +75,8 @@ export async function PATCH(_request: Request, { params }: Params) {
 
 
 export async function DELETE(_request: Request, { params }: Params) {
-  const supabase = await createClient()
- // const { data: { user } } = await supabase.auth.getUser()
-  //if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-
+  const {supabase, unauthorizedResponse} = await requireUser()
+  if (unauthorizedResponse) return unauthorizedResponse
   const { imageId } = await params
 
   // Buscar el public_id antes de borrar

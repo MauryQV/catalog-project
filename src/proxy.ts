@@ -1,7 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next()
 
   const supabase = createServerClient(
@@ -24,7 +25,6 @@ export async function middleware(request: NextRequest) {
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
   const isAdminRoot = request.nextUrl.pathname === '/admin'
   const isDocsRoute = request.nextUrl.pathname.startsWith('/api-docs')
-
   if (isAdminRoute) {
     if (!user && !isAdminRoot) {
       // Unauthenticated users trying to access subroutes redirect to /admin
@@ -37,10 +37,8 @@ export async function middleware(request: NextRequest) {
     }
   }
   if (isDocsRoute) {
-    if (process.env.NODE_ENV === 'production') {
-      return NextResponse.redirect(new URL('/', request.url))
-    } 
-    if (!user) {
+    
+    if (process.env.NODE_ENV === 'production' && !user) {
       return NextResponse.redirect(new URL('/admin', request.url))
     }
   }
@@ -51,5 +49,6 @@ export const config = {
   matcher: ['/admin/:path*',
     '/api/:path*',
     '/api-docs/:path*',
+    '/api-docs'
   ],
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '../../lib/supabase/server' 
+import { requireUser, getAuthSession } from '../../../app/lib/auth'
 
 /**
  * @swagger
@@ -53,7 +53,7 @@ import { createClient } from '../../lib/supabase/server'
 
 // Obtener categorias (GET)
 export async function GET() {
-  const supabase = await createClient()
+   const { supabase } = await getAuthSession()
   
   // Iniciamos la consulta, ordenando por 'sort_order' para que se muestren como quieres
   let query = supabase
@@ -71,7 +71,7 @@ export async function GET() {
 
 // Crear una categoría (POST)
 export async function POST(request: Request) {
-  const supabase = await createClient()
+  const { supabase } = await requireUser()
 
   const { data: { user } } = await supabase.auth.getUser()
    if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
