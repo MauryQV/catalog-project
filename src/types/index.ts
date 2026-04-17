@@ -30,3 +30,10 @@ export type Product = {
   categories?: Pick<Category, 'name' | 'slug'>
   product_images?: ProductImage[]
 }
+
+
+export type Setting = {
+  key: string
+  value: string
+  updated_at: string
+}
