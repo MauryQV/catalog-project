@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/src/app/lib/supabase/queries";
 import { ArrowLeft } from "lucide-react";
+import { headers } from "next/headers";
 import ImageGallery from "./ImageGallery";
 
 async function getWhatsappNumber(): Promise<string | null> {
@@ -30,9 +31,14 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
 
   const allImages = product.product_images ?? [];
 
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = headersList.get("x-forwarded-proto") || "http";
+  const currentUrl = `${protocol}://${host}/item/${product_slug}`;
+
   const categoryName = product.categories?.name ?? "";
   const whatsappMessage = encodeURIComponent(
-    `Estoy interesado en este producto ${product.name} de la categoría ${categoryName}`,
+    `Estoy interesado en este producto ${product.name} de la categoría ${categoryName} - ${currentUrl}`,
   );
   const whatsappHref = whatsappNumber ? `https://wa.me/${whatsappNumber}?text=${whatsappMessage}` : null;
 
