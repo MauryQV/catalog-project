@@ -78,7 +78,7 @@ export async function getProductById(id: string): Promise<Product | null> {
     .from('products')
     .select(`
       *,
-      categories!inner(name, slug),
+      categories(name, slug),
       product_images(
         id,
         url,
@@ -87,6 +87,7 @@ export async function getProductById(id: string): Promise<Product | null> {
       )
     `)
     .eq('id', id)
+    .order('sort_order', { referencedTable: 'product_images', ascending: true })
     .single()
 
   if (error) {
