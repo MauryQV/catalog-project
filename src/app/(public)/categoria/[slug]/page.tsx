@@ -14,7 +14,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         alt="Fondo"
         width={1500}
         height={1500}
-        className="absolute inset-0 h-full w-full -z-10 opacity-100 brightness-60 object-cover"
+        className="bottom-0 fixed inset-0 h-full w-full -z-10 opacity-100 brightness-60 object-cover"
       />
       <ProductGrid products={products} />
     </div>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import EditProductDialog from "./EditProductDialog";
+import AddImagesDialog from "./AddImagesDialog";
 import type { Product } from "@/src/types";
 
 export default function ProductCardAdmin({ product }: { product: Product }) {
@@ -61,19 +62,22 @@ export default function ProductCardAdmin({ product }: { product: Product }) {
           <p>Stock: {product.stock}</p>
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-2 border-t pt-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id={`switch-${product.id}`}
-              checked={active}
-              onCheckedChange={handleToggleActive}
-              disabled={loading}
-            />
-            <Label htmlFor={`switch-${product.id}`} className="text-xs">
-              {active ? "Visible" : "Oculto"}
-            </Label>
+        <div className="mt-auto flex flex-col gap-2 border-t pt-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id={`switch-${product.id}`}
+                checked={active}
+                onCheckedChange={handleToggleActive}
+                disabled={loading}
+              />
+              <Label htmlFor={`switch-${product.id}`} className="text-xs">
+                {active ? "Visible" : "Oculto"}
+              </Label>
+            </div>
+            <EditProductDialog product={product} />
           </div>
-          <EditProductDialog product={product} />
+          <AddImagesDialog productId={product.id} initialImages={product.product_images ?? []} />
         </div>
       </div>
     </div>

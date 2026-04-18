@@ -18,7 +18,7 @@ export default async function Page() {
         alt="Fondo"
         width={1500}
         height={1500}
-        className="absolute inset-0 h-full w-full -z-10 opacity-100 brightness-60 object-cover"
+        className="fixed inset-0 h-full w-full -z-10 opacity-100 brightness-60 object-cover"
       />
       <ProductGrid products={products} isAdmin={isAdmin} />
     </div>

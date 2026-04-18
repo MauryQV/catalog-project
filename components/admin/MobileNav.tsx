@@ -34,13 +34,10 @@ export default function MobileNav({ categories, isAdmin }: Props) {
         </div>
 
         <nav className="flex flex-col gap-1 px-3 py-4">
-          <Link href="/" onClick={() => setOpen(false)} className="text-sm px-3 py-2 rounded-lg hover:bg-gray-100">
-            Todos
-          </Link>
           {categories.map((cat) => (
             <Link
               key={cat.id}
-              href={`admin/category/${cat.slug}`}
+              href={`/admin/category/${cat.id}`}
               onClick={() => setOpen(false)}
               className="text-sm px-3 py-2 rounded-lg hover:bg-gray-100"
             >
