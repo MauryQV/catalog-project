@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import {requireUser } from '../../../lib/auth' 
+import {requireUser, getAuthSession } from '../../../lib/auth' 
+import { get } from 'http'
 
 
 /**
@@ -128,10 +129,8 @@ export async function DELETE(_request: Request, { params }: Params) {
 
 //GET de un producto por id
 export async function GET(_request: Request, { params }: Params) {
-   const { supabase, unauthorizedResponse} = await requireUser()
-   if (unauthorizedResponse) return unauthorizedResponse
-
-  const { id } = await params
+   const { supabase} = await getAuthSession()
+   const { id } = await params
 
   const { data, error } = await supabase
     .from('products')
