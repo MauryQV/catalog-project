@@ -1,29 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { createClient } from "@/src/app/lib/supabase/server";
+
 import { getProductById } from "@/src/app/lib/supabase/queries";
 import { ArrowLeft } from "lucide-react";
 import { headers } from "next/headers";
 import ImageGallery from "./ImageGallery";
 
-async function getWhatsappNumber(): Promise<string | null> {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3800";
-    const res = await fetch(`${baseUrl}/api/settings/whatsapp`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.number ?? null;
-  } catch {
-    return null;
-  }
-}
-
 export default async function ProductDetailsPage({ params }: { params: Promise<{ product_slug: string }> }) {
   const { product_slug } = await params;
+  const supabase = await createClient();
 
-  const [product, whatsappNumber] = await Promise.all([getProductById(product_slug), getWhatsappNumber()]);
+  const { data, error } = await supabase
+    .from("settings")
+    .select("value, updated_at")
+    .eq("key", "whatsapp_number")
+    .single();
+
+  const [product] = await Promise.all([getProductById(product_slug)]);
 
   if (!product) {
     notFound();
@@ -40,7 +35,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
   const whatsappMessage = encodeURIComponent(
     `Estoy interesado en este producto ${product.name} de la categoría ${categoryName} - ${currentUrl}`,
   );
-  const whatsappHref = whatsappNumber ? `https://wa.me/${whatsappNumber}?text=${whatsappMessage}` : null;
+  const whatsappHref = data?.value ? `https://wa.me/${data.value}?text=${whatsappMessage}` : null;
 
   return (
     <div>

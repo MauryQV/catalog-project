@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Category } from "../../../types/index";
 import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 type Props = {
   categories: Category[];
 };
@@ -11,6 +13,18 @@ import Image from "next/image";
 
 export default function MobileNav({ categories }: Props) {
   const [open, setOpen] = useState(false);
+  const [ws, setWS] = useState<{ number: string; url: string } | null>(null);
+  useEffect(() => {
+    const fetchWahtsapp = async () => {
+      const res = await fetch(`/api/settings/whatsapp`, {
+        cache: "no-store",
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      setWS(data);
+    };
+    fetchWahtsapp();
+  }, []);
 
   return (
     <>
@@ -45,6 +59,16 @@ export default function MobileNav({ categories }: Props) {
               {cat.name}
             </Link>
           ))}
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-4 w-full cursor-pointer"
+            onClick={() => {
+              window.open(`https://wa.me/+591${ws?.number}`, "_blank");
+            }}
+          >
+            Enviar sugerencias
+          </Button>
         </nav>
       </div>
     </>
