@@ -8,8 +8,11 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Mi Catálogo",
+  title: "Black Cat Store | Catalogo",
   description: "Catálogo de productos",
+  icons:{
+    icon: "/cat-logo-light.png",
+  }
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
